@@ -22,6 +22,28 @@ In a **JSON-Driven Architecture**, endpoints are structured data:
 
 ---
 
+## Scaffolding CLI
+
+Use `json-driven-npm` via CLI to instantly scaffold the architecture into any project or new version directory:
+
+```bash
+# Scaffold into a specific version directory
+npx json-driven-npm ./src/v13
+
+# Scaffold into a new client project
+npx json-driven-npm ./my-api-client
+```
+
+### What Gets Scaffolded (2 Folders & 2 Files)
+- 📁 `external-api/` (`api.json`, `api.js` - public routing contract)
+- 📁 `internal-working/` (`route/`, `execution/` - mounting & dispatch engines)
+- 📄 `source.json` - domain endpoint metadata
+- 📄 `index.js` - public entry point
+
+> **Single Point of Customization**: `internal-working/execution/index.js` is the **only** place you write your custom fetch/query logic. All route mounting and tree binding is handled automatically!
+
+---
+
 ## Quick Start
 
 ### 1. Install & Import
