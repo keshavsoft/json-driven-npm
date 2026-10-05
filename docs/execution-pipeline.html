@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story-Driven Execution Pipeline — JSON-Driven NPM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="doc-nav">
+            <a href="index.html">&larr; Documentation Hub</a>
+            <a href="execution-pipeline.md">View Markdown</a>
+        </nav>
+
+        <h1>Story-Driven Execution Pipeline</h1>
+        <p>When a consumer calls an endpoint like <code>await app.users.profile.fetch("user-101")</code>, execution is handled by a story-driven pipeline.</p>
+
+        <h2>The Execution Flow</h2>
+        <pre><code>Invocation: app.users.profile.fetch("user-101")
+  │
+  ▼
+Step 1: validateInput({ inParam })
+  │  Validates input parameter and trims whitespace
+  ▼
+Step 2: getEndpointSpec({ inSource, inRoutePath })
+  │  Direct O(1) path reduction against source.json to retrieve endpoint metadata
+  ▼
+Step 3: dispatchMock({ inEndpoint, inParam })
+  │  Dispatches request to network/database/transport layer
+  ▼
+Caller receives response object</code></pre>
+
+        <h2>The Narrative Steps</h2>
+        <p>Inside <code>internal-working/execution/</code>, each step is isolated in a single, focused module:</p>
+
+        <h3>Step 1: Input Validation (<code>validateInput.js</code>)</h3>
+        <p>Validates that the parameter is a valid non-empty string. Fails early with a clear <code>TypeError</code> if invalid.</p>
+
+        <h3>Step 2: Direct Spec Lookup (<code>getEndpointSpec.js</code>)</h3>
+        <p>Rather than recursively walking a JSON tree, the endpoint specification is retrieved in a single line using array reduction.</p>
+
+        <h3>Step 3: Request Dispatch (<code>dispatchMock.js</code>)</h3>
+        <p>In a production client (such as <code>tally-simple</code>), this step performs network transport. In this reference implementation, it formats and returns structured data.</p>
+
+        <h2>The Coordinator (<code>index.js</code>)</h2>
+        <p>The coordinator sequences the pipeline into a plain, 4-line story with no bloated comments:</p>
+        <pre><code>const param = validateInput({ inParam: localParam });
+const endpoint = getEndpointSpec({ inSource: localSource, inRoutePath: localRoutePath });
+
+return await dispatchMock({ inEndpoint: endpoint, inParam: param });</code></pre>
+
+        <h2>Architectural Highlights</h2>
+        <ul>
+            <li><strong>Direct Resolution:</strong> Zero tree crawling, zero key-skipping conditions.</li>
+            <li><strong>Narrative Clarity:</strong> The coordinator reads like English sentences.</li>
+            <li><strong>Single Responsibility:</strong> Each file does exactly one job.</li>
+            <li><strong>Strict Single Export:</strong> Every file uses <code>export default startFunc;</code>.</li>
+        </ul>
+
+        <footer>
+            <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>
+        </footer>
+    </div>
+</body>
+</html>

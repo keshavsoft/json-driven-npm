@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Assembly Engine — JSON-Driven NPM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="doc-nav">
+            <a href="index.html">&larr; Documentation Hub</a>
+            <a href="route-engine.md">View Markdown</a>
+        </nav>
+
+        <h1>Route Assembly Engine</h1>
+        <p>The route engine transforms a flat allowlist of string paths (from <code>api.json</code>) into an intuitive, nested, callable JavaScript object tree at initialization time.</p>
+
+        <h2>Why Route Assembly?</h2>
+        <p>Consumers want natural syntax:</p>
+        <pre><code>await app.users.profile.fetch("user-101");</code></pre>
+        <p>The route engine builds this tree dynamically without generating physical directories or writing redundant boilerplate files.</p>
+
+        <h2>The Three Narrative Modules</h2>
+        <p>Inside <code>internal-working/route/</code>, responsibility is divided into three small, focused modules:</p>
+        <pre><code>internal-working/route/
+├── index.js              &lt;-- Coordinator: iterates paths &amp; returns root
+├── attachPath.js         &lt;-- Traverses branches &amp; mounts the leaf
+└── createLeafHandler.js  &lt;-- Factory creating the callable endpoint</code></pre>
+
+        <h2>1. Leaf Endpoint Factory (<code>createLeafHandler.js</code>)</h2>
+        <p>A leaf is the terminal callable function at the end of a route. When invoked by the consumer, it captures the route path and forwards the call to the executor.</p>
+
+        <h2>2. Path Attacher (<code>attachPath.js</code>)</h2>
+        <p>To attach a path like <code>"app.users.profile.fetch"</code>:</p>
+        <ol>
+            <li>Split the path into intermediate branch keys and the leaf action.</li>
+            <li>Traverse through each branch segment, initializing empty objects where needed.</li>
+            <li>Attach the callable leaf handler at the target property.</li>
+        </ol>
+
+        <h2>3. Route Coordinator (<code>index.js</code>)</h2>
+        <p>Iterates each path in <code>inApiPaths</code>, mounts it into the tree, and returns the root namespace.</p>
+
+        <h2>Architectural Benefits</h2>
+        <ul>
+            <li><strong>Built Once:</strong> The object tree is created once during module evaluation. Invocation is instantaneous.</li>
+            <li><strong>Story-Driven:</strong> Each file is under 40 lines and represents one clear step in the route-building narrative.</li>
+            <li><strong>Strict Single Export:</strong> Every file uses <code>export default startFunc;</code>.</li>
+        </ul>
+
+        <footer>
+            <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>
+        </footer>
+    </div>
+</body>
+</html>

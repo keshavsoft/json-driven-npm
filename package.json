@@ -1,0 +1,38 @@
+{
+    "name": "json-driven-npm",
+    "version": "1.0.0",
+    "description": "Architectural blueprint and reference implementation for building clean, type-safe, JSON-driven NPM clients without folder sprawl.",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "import": "./src/index.js",
+            "default": "./src/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "files": [
+        "src",
+        "docs",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "generate:dts": "node generate-dts.js",
+        "test": "node --test test/test.js test/usage.js",
+        "verify": "npm run generate:dts && npm test"
+    },
+    "keywords": [
+        "json-driven",
+        "architecture",
+        "api-client",
+        "declarative-api",
+        "sdk-pattern"
+    ],
+    "license": "MIT",
+    "engines": {
+        "node": ">=20.10"
+    }
+}

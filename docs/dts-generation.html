@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic TypeScript Generation — JSON-Driven NPM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="doc-nav">
+            <a href="index.html">&larr; Documentation Hub</a>
+            <a href="dts-generation.md">View Markdown</a>
+        </nav>
+
+        <h1>Dynamic TypeScript Generation from JSON</h1>
+        <p>A major concern with dynamic, JSON-driven clients is TypeScript support: <em>If endpoints are dynamically mounted at runtime, how do developers get full autocomplete and static type safety?</em></p>
+        <p>This document explains how the JSON-driven architecture generates comprehensive TypeScript declarations (<code>src/index.d.ts</code>) directly from <code>api.json</code> and <code>source.json</code>.</p>
+
+        <h2>The Generation Pipeline</h2>
+        <pre><code>source.json (Domain Spec)  +  api.json (Allowed Paths)
+                    │
+                    ▼
+       scripts/dts/load-version-definition.js
+       (Validates paths &amp; constructs an AST tree)
+                    │
+                    ▼
+       scripts/dts/render-declaration.js
+       (Recursively renders TypeScript interfaces &amp; JSDocs)
+                    │
+                    ▼
+             src/index.d.ts
+    (Full IDE autocomplete &amp; compile-time checking)</code></pre>
+
+        <h2>How It Works</h2>
+
+        <h3>1. Version Detection (<code>find-active-version.js</code>)</h3>
+        <p>Inspects <code>src/index.js</code> to find which version is active and ensures declarations match the exact active runtime code.</p>
+
+        <h3>2. Contract Validation (<code>load-version-definition.js</code>)</h3>
+        <p>Before generating any types, the generator validates that every path in <code>api.json</code> exists in <code>source.json</code>, preventing runtime bugs or ghost endpoints.</p>
+
+        <h3>3. Declaration Rendering (<code>render-declaration.js</code>)</h3>
+        <p>The renderer walks the validated tree and generates a nested TypeScript type definition with JSDoc comments pulled directly from <code>source.json</code>.</p>
+
+        <h2>Developer Experience</h2>
+        <p>When an application developer imports the client in TypeScript or JavaScript:</p>
+        <ul>
+            <li>VS Code provides instant autocomplete for every namespace.</li>
+            <li>Hovering over any endpoint displays the JSDoc description from <code>source.json</code>.</li>
+            <li>Calling an unsupported path produces an immediate TypeScript compiler error.</li>
+        </ul>
+
+        <h2>How to Run</h2>
+        <pre><code>npm run generate:dts</code></pre>
+
+        <footer>
+            <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON-Driven NPM — Architecture Knowledge Hub</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #7dd3fc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2.5rem 1.5rem;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1.5rem;
+        }
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.2s, transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .card h2 {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        .formats {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+        }
+        .format-badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        footer {
+            margin-top: 3.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--card-border);
+            padding-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JSON-Driven NPM Architecture</h1>
+            <p class="subtitle">A complete reference guide to building scalable, type-safe API clients without directory sprawl.</p>
+        </header>
+
+        <div class="grid">
+            <a class="card" href="philosophy.html">
+                <div>
+                    <h2>1. Philosophy: JSON vs Folder Sprawl</h2>
+                    <p>Why conventional nested folder-and-file structures become unmaintainable, and how JSON-driven routing eliminates boilerplate.</p>
+                </div>
+                <div class="formats">
+                    <span class="format-badge">HTML</span>
+                    <span class="format-badge" onclick="event.preventDefault(); window.location.href='philosophy.md';">Markdown</span>
+                </div>
+            </a>
+
+            <a class="card" href="architecture.html">
+                <div>
+                    <h2>2. System Boundaries &amp; Layers</h2>
+                    <p>Strict architectural separation between public allowlists (<code>api.json</code>), domain specs (<code>source.json</code>), and internal engines.</p>
+                </div>
+                <div class="formats">
+                    <span class="format-badge">HTML</span>
+                    <span class="format-badge" onclick="event.preventDefault(); window.location.href='architecture.md';">Markdown</span>
+                </div>
+            </a>
+
+            <a class="card" href="route-engine.html">
+                <div>
+                    <h2>3. Route Assembly Engine</h2>
+                    <p>How dot-separated paths are dynamically mounted into a nested, callable JavaScript object tree at initialization time.</p>
+                </div>
+                <div class="formats">
+                    <span class="format-badge">HTML</span>
+                    <span class="format-badge" onclick="event.preventDefault(); window.location.href='route-engine.md';">Markdown</span>
+                </div>
+            </a>
+
+            <a class="card" href="execution-pipeline.html">
+                <div>
+                    <h2>4. Story-Driven Execution Pipeline</h2>
+                    <p>Decomposing query execution into small, single-responsibility narrative steps without monolithic functions or defensive bloat.</p>
+                </div>
+                <div class="formats">
+                    <span class="format-badge">HTML</span>
+                    <span class="format-badge" onclick="event.preventDefault(); window.location.href='execution-pipeline.md';">Markdown</span>
+                </div>
+            </a>
+
+            <a class="card" href="dts-generation.html">
+                <div>
+                    <h2>5. Dynamic TypeScript Typing</h2>
+                    <p>How TypeScript declaration files (<code>index.d.ts</code>) are automatically generated from JSON specifications for rich autocomplete.</p>
+                </div>
+                <div class="formats">
+                    <span class="format-badge">HTML</span>
+                    <span class="format-badge" onclick="event.preventDefault(); window.location.href='dts-generation.md';">Markdown</span>
+                </div>
+            </a>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>
+        </footer>
+    </div>
+</body>
+</html>

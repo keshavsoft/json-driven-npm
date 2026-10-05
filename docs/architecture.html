@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Architecture — JSON-Driven NPM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="doc-nav">
+            <a href="index.html">&larr; Documentation Hub</a>
+            <a href="architecture.md">View Markdown</a>
+        </nav>
+
+        <h1>System Boundaries &amp; Architecture</h1>
+        <p>This document details the architectural boundaries that govern a JSON-driven NPM package.</p>
+
+        <h2>Architectural Diagram</h2>
+        <pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    1. The Public Perimeter                  │
+│                                                             │
+│   external-api/api.json ───► external-api/api.js            │
+│   (Allowed Route Paths)      (Public Facade Export)         │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 2. Internal Working Engines                 │
+│                                                             │
+│   internal-working/route/     internal-working/execution/   │
+│   (Object Tree Assembly)      (Narrative Step Pipeline)     │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                3. Pure Domain Specification                 │
+│                                                             │
+│   source.json                                               │
+│   (Resource Contracts, Actions, Metadata)                   │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+        <h2>The Three Layers</h2>
+
+        <h3>1. The Public Perimeter (<code>external-api/</code>)</h3>
+        <p>The public perimeter enforces strict information hiding:</p>
+        <ul>
+            <li><strong><code>api.json</code></strong>: An explicit array of dot-separated paths. Only paths listed here are exposed on the returned client.</li>
+            <li><strong><code>api.js</code></strong>: Connects <code>api.json</code> and <code>source.json</code> through the route engine and exports the client instance.</li>
+        </ul>
+
+        <h3>2. The Internal Engines (<code>internal-working/</code>)</h3>
+        <ul>
+            <li><strong><code>route/</code></strong>: Traverses <code>api.json</code> and dynamically constructs nested objects with callable functions at the leaf nodes.</li>
+            <li><strong><code>execution/</code></strong>: The runtime executor. When an endpoint is called, it executes the query through a modular pipeline.</li>
+        </ul>
+
+        <h3>3. Pure Domain Specification (<code>source.json</code>)</h3>
+        <p><code>source.json</code> contains strictly business definitions (e.g. resource names, actions, descriptions). It contains <strong>no</strong> connection parameters, <strong>no</strong> URLs, and <strong>no</strong> request headers.</p>
+
+        <h2>Core Coding Principles</h2>
+        <ul>
+            <li><strong>Strictly One Default Export:</strong> Every module exports exactly one item using <code>export default startFunc;</code>.</li>
+            <li><strong>Standardized Parameter Unwrapping:</strong> All functions accept a single object with <code>in</code>-prefixed keys, unwrapped immediately into <code>local</code>-prefixed variables.</li>
+            <li><strong>Domain-Only Single Source of Truth:</strong> <code>source.json</code> is the single source of truth for <em>domain queries</em>, not for transport configurations or runtime options.</li>
+        </ul>
+
+        <footer>
+            <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>
+        </footer>
+    </div>
+</body>
+</html>
