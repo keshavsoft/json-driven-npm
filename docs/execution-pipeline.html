@@ -14,20 +14,20 @@
         </nav>
 
         <h1>Story-Driven Execution Pipeline</h1>
-        <p>When a consumer calls an endpoint like <code>await app.users.profile.fetch("user-101")</code>, execution is handled by a story-driven pipeline.</p>
+        <p>When a consumer calls an endpoint like <code>await app.founder.profile.fetch()</code>, execution is handled by a story-driven pipeline.</p>
 
         <h2>The Execution Flow</h2>
-        <pre><code>Invocation: app.users.profile.fetch("user-101")
+        <pre><code>Invocation: app.founder.profile.fetch()
   │
   ▼
 Step 1: validateInput({ inParam })
-  │  Validates input parameter and trims whitespace
+  │  Sanitizes input parameter and handles optional or string arguments
   ▼
 Step 2: getEndpointSpec({ inSource, inRoutePath })
   │  Direct O(1) path reduction against source.json to retrieve endpoint metadata
   ▼
 Step 3: dispatchMock({ inEndpoint, inParam })
-  │  Dispatches request to network/database/transport layer
+  │  Returns declared payload or dispatches request to transport layer
   ▼
 Caller receives response object</code></pre>
 
@@ -35,16 +35,16 @@ Caller receives response object</code></pre>
         <p>Inside <code>internal-working/execution/</code>, each step is isolated in a single, focused module:</p>
 
         <h3>Step 1: Input Validation (<code>validateInput.js</code>)</h3>
-        <p>Validates that the parameter is a valid non-empty string. Fails early with a clear <code>TypeError</code> if invalid.</p>
+        <p>Normalizes input parameters. Safely handles absent parameters for zero-argument queries, trims strings, and coerces primitives.</p>
 
         <h3>Step 2: Direct Spec Lookup (<code>getEndpointSpec.js</code>)</h3>
         <p>Rather than recursively walking a JSON tree, the endpoint specification is retrieved in a single line using array reduction.</p>
 
         <h3>Step 3: Request Dispatch (<code>dispatchMock.js</code>)</h3>
-        <p>In a production client (such as <code>tally-simple</code>), this step performs network transport. In this reference implementation, it formats and returns structured data.</p>
+        <p>In a production client (such as <code>tally-simple</code>), this step performs network transport. In this reference implementation, it returns the endpoint's configured data contract or a structured result.</p>
 
         <h2>The Coordinator (<code>index.js</code>)</h2>
-        <p>The coordinator sequences the pipeline into a plain, 4-line story with no bloated comments:</p>
+        <p>The coordinator sequences the pipeline into a plain, 4-line story with no defensive bloat:</p>
         <pre><code>const param = validateInput({ inParam: localParam });
 const endpoint = getEndpointSpec({ inSource: localSource, inRoutePath: localRoutePath });
 
@@ -53,9 +53,10 @@ return await dispatchMock({ inEndpoint: endpoint, inParam: param });</code></pre
         <h2>Architectural Highlights</h2>
         <ul>
             <li><strong>Direct Resolution:</strong> Zero tree crawling, zero key-skipping conditions.</li>
-            <li><strong>Narrative Clarity:</strong> The coordinator reads like English sentences.</li>
+            <li><strong>Narrative Clarity:</strong> The coordinator reads like plain English sentences.</li>
             <li><strong>Single Responsibility:</strong> Each file does exactly one job.</li>
             <li><strong>Strict Single Export:</strong> Every file uses <code>export default startFunc;</code>.</li>
+            <li><strong>Single Point of Customization:</strong> When building your own API client, <code>execution/</code> is the only folder you customize.</li>
         </ul>
 
         <footer>

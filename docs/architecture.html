@@ -17,53 +17,62 @@
         <p>This document details the architectural boundaries that govern a JSON-driven NPM package.</p>
 
         <h2>Architectural Diagram</h2>
-        <pre><code>┌─────────────────────────────────────────────────────────────┐
-│                    1. The Public Perimeter                  │
-│                                                             │
-│   external-api/api.json ───► external-api/api.js            │
-│   (Allowed Route Paths)      (Public Facade Export)         │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 2. Internal Working Engines                 │
-│                                                             │
-│   internal-working/route/     internal-working/execution/   │
-│   (Object Tree Assembly)      (Narrative Step Pipeline)     │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                3. Pure Domain Specification                 │
-│                                                             │
-│   source.json                                               │
-│   (Resource Contracts, Actions, Metadata)                   │
-└─────────────────────────────────────────────────────────────┘</code></pre>
+        <pre><code>┌──────────────────────────────────────────────────────────────────┐
+│                     1. The Public Interface                      │
+│                                                                  │
+│   api.json ─────────────────────► index.js                       │
+│   (Public Route Allowlist)        (Composition Root &amp; Facade)    │
+└─────────────────────────────────┬────────────────────────────────┘
+                                  │
+                                  ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                   2. Internal Working Engines                    │
+│                                                                  │
+│   internal-working/route/         internal-working/execution/    │
+│   (In-Memory Tree Assembly)       (Single-Step Dispatch Pipeline)│
+└─────────────────────────────────┬────────────────────────────────┘
+                                  │
+                                  ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                  3. Pure Domain Specification                    │
+│                                                                  │
+│   source.json                                                    │
+│   (Resource Contracts, JSDocs, Schemas, &amp; Data)                  │
+└──────────────────────────────────────────────────────────────────┘</code></pre>
 
-        <h2>The Three Layers</h2>
+        <h2>The Three Clean Layers</h2>
 
-        <h3>1. The Public Perimeter (<code>external-api/</code>)</h3>
-        <p>The public perimeter enforces strict information hiding:</p>
+        <h3>1. The Public Interface (<code>api.json</code> &amp; <code>index.js</code>)</h3>
+        <p>The public interface enforces strict information hiding and acts as the composition root:</p>
         <ul>
-            <li><strong><code>api.json</code></strong>: An explicit array of dot-separated paths. Only paths listed here are exposed on the returned client.</li>
-            <li><strong><code>api.js</code></strong>: Connects <code>api.json</code> and <code>source.json</code> through the route engine and exports the client instance.</li>
+            <li><strong><code>api.json</code></strong>: An explicit array of dot-separated paths. Only paths listed here are mounted and exposed on the returned client. Internal helper endpoints or draft specs in <code>source.json</code> remain private.</li>
+            <li><strong><code>index.js</code></strong>: Imports <code>api.json</code> and <code>source.json</code> with JSON import attributes, connects them to the route assembly engine, and exports the client instance.</li>
         </ul>
 
         <h3>2. The Internal Engines (<code>internal-working/</code>)</h3>
         <ul>
-            <li><strong><code>route/</code></strong>: Traverses <code>api.json</code> and dynamically constructs nested objects with callable functions at the leaf nodes.</li>
-            <li><strong><code>execution/</code></strong>: The runtime executor. When an endpoint is called, it executes the query through a modular pipeline.</li>
+            <li><strong><code>route/</code></strong>: Traverses <code>api.json</code> and dynamically constructs nested objects with callable functions at the leaf nodes in memory at startup.</li>
+            <li><strong><code>execution/</code></strong>: The runtime executor. When an endpoint is called, it receives <code>{ inRoutePath, inParam, inSource }</code> and executes the query through a narrative, single-responsibility pipeline.</li>
         </ul>
 
         <h3>3. Pure Domain Specification (<code>source.json</code>)</h3>
-        <p><code>source.json</code> contains strictly business definitions (e.g. resource names, actions, descriptions). It contains <strong>no</strong> connection parameters, <strong>no</strong> URLs, and <strong>no</strong> request headers.</p>
+        <p><code>source.json</code> contains strictly business and domain definitions (e.g. resource names, actions, JSDoc descriptions, schemas, and data payloads). It contains <strong>no</strong> connection parameters, <strong>no</strong> URLs, and <strong>no</strong> request headers.</p>
 
         <h2>Core Coding Principles</h2>
-        <ul>
-            <li><strong>Strictly One Default Export:</strong> Every module exports exactly one item using <code>export default startFunc;</code>.</li>
-            <li><strong>Standardized Parameter Unwrapping:</strong> All functions accept a single object with <code>in</code>-prefixed keys, unwrapped immediately into <code>local</code>-prefixed variables.</li>
-            <li><strong>Domain-Only Single Source of Truth:</strong> <code>source.json</code> is the single source of truth for <em>domain queries</em>, not for transport configurations or runtime options.</li>
-        </ul>
+        <ol>
+            <li><strong>Strictly One Default Export:</strong> Every module exports exactly one item using <code>export default startFunc;</code>. Named exports and dual exports are strictly forbidden.</li>
+            <li><strong>Standardized Parameter Unwrapping:</strong> All functions accept a single object with <code>in</code>-prefixed keys, which are immediately unwrapped into <code>local</code>-prefixed variables:
+                <pre><code>const startFunc = ({ inRoutePath, inParam, inSource }) =&gt; {
+    const localRoutePath = inRoutePath;
+    const localParam = inParam;
+    const localSource = inSource;
+    // ...
+};
+export default startFunc;</code></pre>
+            </li>
+            <li><strong>Domain-Only Single Source of Truth:</strong> <code>source.json</code> is the single source of truth for <em>domain queries</em>, never for transport configurations or runtime options.</li>
+            <li><strong>Zero Directory Sprawl:</strong> New endpoints are added by modifying JSON specifications, never by multiplying folders and boilerplate files.</li>
+        </ol>
 
         <footer>
             <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>

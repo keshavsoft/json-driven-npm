@@ -8,20 +8,20 @@ The route engine transforms a flat allowlist of string paths (from `api.json`) i
 
 ## Why Route Assembly?
 
-Consumers want natural syntax:
+Consumers want natural, object-oriented dot syntax:
 
 ```javascript
-await app.users.profile.fetch("user-101");
+await app.founder.profile.fetch();
 ```
 
 They do not want manual string-based dispatchers:
 
 ```javascript
 // Not this:
-await app.execute("app.users.profile.fetch", "user-101");
+await app.execute("app.founder.profile.fetch");
 ```
 
-The route engine builds this tree dynamically without generating physical directories or writing redundant boilerplate files.
+The route engine builds this tree dynamically in memory without generating physical directories or writing redundant boilerplate files.
 
 ---
 
@@ -31,7 +31,7 @@ Inside `internal-working/route/`, responsibility is divided into three small, fo
 
 ```text
 internal-working/route/
-├── index.js              <-- Coordinator: iterates paths & returns root
+├── index.js              <-- Coordinator: iterates paths & returns root namespace
 ├── attachPath.js         <-- Traverses branches & mounts the leaf
 └── createLeafHandler.js  <-- Factory creating the callable endpoint
 ```
@@ -48,12 +48,14 @@ const startFunc = ({ inPath, inSource, inExecutor }) => {
     const localSource = inSource;
     const localExecutor = inExecutor;
 
-    return async (inParam) => {
+    return async (inParam, ...inArgs) => {
         const localParam = inParam;
+        const localArgs = inArgs;
 
         return await localExecutor({
             inRoutePath: localPath,
             inParam: localParam,
+            inArgs: localArgs,
             inSource: localSource
         });
     };
@@ -66,8 +68,8 @@ export default startFunc;
 
 ### 2. Path Attacher (`attachPath.js`)
 
-To attach a path like `"app.users.profile.fetch"`:
-1. Split the path into intermediate branch keys (`["app", "users", "profile"]`) and the leaf action (`"fetch"`).
+To attach a path like `"app.founder.profile.fetch"`:
+1. Split the path into intermediate branch keys (`["app", "founder", "profile"]`) and the leaf action (`"fetch"`).
 2. Traverse through each branch segment, initializing empty objects (`{}`) where needed.
 3. Attach the callable leaf handler at the target property:
 
@@ -139,3 +141,4 @@ export default startFunc;
 - **Built Once:** The object tree is created once during module evaluation. Invocation is instantaneous.
 - **Story-Driven:** Each file is under 40 lines and represents one clear step in the route-building narrative.
 - **Strict Single Export:** Every file uses `export default startFunc;`.
+- **Zero Directory Sprawl:** 50 endpoints can be mounted without adding a single directory.

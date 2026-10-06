@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic TypeScript Generation — JSON-Driven NPM</title>
+    <title>Declarative TypeScript Generation — JSON-Driven NPM</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,46 +13,90 @@
             <a href="dts-generation.md">View Markdown</a>
         </nav>
 
-        <h1>Dynamic TypeScript Generation from JSON</h1>
-        <p>A major concern with dynamic, JSON-driven clients is TypeScript support: <em>If endpoints are dynamically mounted at runtime, how do developers get full autocomplete and static type safety?</em></p>
-        <p>This document explains how the JSON-driven architecture generates comprehensive TypeScript declarations (<code>src/index.d.ts</code>) directly from <code>api.json</code> and <code>source.json</code>.</p>
+        <h1>Declarative TypeScript Generation from JSON</h1>
+        <p>A common concern with dynamic, in-memory client architectures is typing: <em>If endpoints are dynamically mounted at runtime from JSON, how do consumers get full IDE autocomplete and static type safety?</em></p>
+        <p>In this architecture, typing is <strong>declarative and automated</strong>: because <code>api.json</code> and <code>source.json</code> form a complete, unambiguous contract of the client API, TypeScript declarations (<code>src/index.d.ts</code>) are generated deterministically directly from the JSON files.</p>
 
         <h2>The Generation Pipeline</h2>
-        <pre><code>source.json (Domain Spec)  +  api.json (Allowed Paths)
-                    │
-                    ▼
-       scripts/dts/load-version-definition.js
-       (Validates paths &amp; constructs an AST tree)
-                    │
-                    ▼
-       scripts/dts/render-declaration.js
-       (Recursively renders TypeScript interfaces &amp; JSDocs)
-                    │
-                    ▼
-             src/index.d.ts
-    (Full IDE autocomplete &amp; compile-time checking)</code></pre>
+        <pre><code>api.json (Allowed Route Paths)  +  source.json (Domain Spec &amp; Descriptions)
+                          │
+                          ▼
+             Contract Scanning &amp; AST Tree Assembly
+                          │
+                          ▼
+             TypeScript Declaration Generator
+                          │
+                          ▼
+                   src/index.d.ts
+    (Full IDE autocomplete, hover tooltips, &amp; compile-time types)</code></pre>
 
-        <h2>How It Works</h2>
+        <h2>How Declarative Typing Works</h2>
 
-        <h3>1. Version Detection (<code>find-active-version.js</code>)</h3>
-        <p>Inspects <code>src/index.js</code> to find which version is active and ensures declarations match the exact active runtime code.</p>
+        <h3>1. Contract Alignment</h3>
+        <p>The generator scans the active version in <code>src/index.js</code> and cross-references <code>api.json</code> against <code>source.json</code>. Every path declared in <code>api.json</code> is verified to exist in <code>source.json</code>, preventing runtime bugs or ghost endpoints.</p>
 
-        <h3>2. Contract Validation (<code>load-version-definition.js</code>)</h3>
-        <p>Before generating any types, the generator validates that every path in <code>api.json</code> exists in <code>source.json</code>, preventing runtime bugs or ghost endpoints.</p>
+        <h3>2. JSDoc Extraction</h3>
+        <p>Each endpoint specification in <code>source.json</code> includes a human-readable <code>"description"</code>. The generator extracts this description and injects it as a native JSDoc comment above the method signature in the generated type definition.</p>
 
-        <h3>3. Declaration Rendering (<code>render-declaration.js</code>)</h3>
-        <p>The renderer walks the validated tree and generates a nested TypeScript type definition with JSDoc comments pulled directly from <code>source.json</code>.</p>
+        <h3>3. Generated Declaration (<code>src/index.d.ts</code>)</h3>
+        <p>For <code>src/v3</code>, the resulting declaration file is clean, exact, and type-safe:</p>
+        <pre><code>export type AppApi = {
+    founder: {
+        profile: {
+            /** Fetches founder and software architect profile. */
+            fetch: (inParam: string, ...inArgs: any[]) =&gt; Promise&lt;any&gt;;
+        };
+        links: {
+            /** Fetches official website, GitHub, NPM, and LinkedIn profile links. */
+            fetch: (inParam: string, ...inArgs: any[]) =&gt; Promise&lt;any&gt;;
+        };
+    };
+    company: {
+        info: {
+            /** Fetches KeshavSoft organization information and engineering philosophy. */
+            fetch: (inParam: string, ...inArgs: any[]) =&gt; Promise&lt;any&gt;;
+        };
+    };
+    ecosystem: {
+        packages: {
+            /** Lists flagship packages in the KeshavSoft ecosystem. */
+            fetch: (inParam: string, ...inArgs: any[]) =&gt; Promise&lt;any&gt;;
+        };
+    };
+};
+
+declare const app: AppApi;
+export default app;</code></pre>
 
         <h2>Developer Experience</h2>
         <p>When an application developer imports the client in TypeScript or JavaScript:</p>
         <ul>
-            <li>VS Code provides instant autocomplete for every namespace.</li>
-            <li>Hovering over any endpoint displays the JSDoc description from <code>source.json</code>.</li>
-            <li>Calling an unsupported path produces an immediate TypeScript compiler error.</li>
+            <li><strong>IntelliSense Autocomplete:</strong> VS Code provides instant autocomplete for every namespace.</li>
+            <li><strong>Hover Documentation:</strong> Hovering over any endpoint displays the JSDoc description from <code>source.json</code>.</li>
+            <li><strong>Type Safety:</strong> Calling an unsupported path produces an immediate TypeScript compiler error.</li>
         </ul>
 
-        <h2>How to Run</h2>
-        <pre><code>npm run generate:dts</code></pre>
+        <h2>Running Type Generation</h2>
+        <p>Generate declarations directly via <code>create-intellisense</code>:</p>
+        <pre><code>npx create-intellisense</code></pre>
+        <p>Or run type generation and execute test suite:</p>
+        <pre><code>npm run verify</code></pre>
+
+        <h2>Applying This to Your Own Custom Packages</h2>
+        <p>Once you understand how <code>json-driven-npm</code> declares its API in JSON:</p>
+        <ol>
+            <li><strong>Create your contracts:</strong> Define your own endpoints in <code>source.json</code> (or <code>structure.json</code>) and your public allowed paths in <code>api.json</code>.</li>
+            <li><strong>Install the companion tool:</strong> Add <code>create-intellisense</code> as a devDependency:
+                <pre><code>npm install -D create-intellisense</code></pre>
+            </li>
+            <li><strong>Automate in your scripts:</strong>
+                <pre><code>"scripts": {
+    "test": "node --test test/test.js",
+    "verify": "create-intellisense &amp;&amp; npm test"
+}</code></pre>
+            </li>
+            <li><strong>Instant TypeScript autocomplete:</strong> Running <code>create-intellisense</code> scans your JSON contracts and generates your package's <code>index.d.ts</code> automatically!</li>
+        </ol>
 
         <footer>
             <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>

@@ -1,7 +1,13 @@
 import app from "../src/index.js";
 
-const profile = await app.users.profile.fetch("alice-42");
-console.log("Profile returned:", profile);
+const profile = await app.founder.profile.fetch();
+console.log("Founder Profile:", profile);
 
-const metrics = await app.reports.metrics.fetch("2026-10-05");
-console.log("Metrics returned:", metrics);
+const links = await app.founder.links.fetch();
+console.log("Official Links:", links);
+
+const company = await app.company.info.fetch();
+console.log("Company Info:", company);
+
+const packages = await app.ecosystem.packages.fetch();
+console.log("Ecosystem Packages:", packages);

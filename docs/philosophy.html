@@ -42,7 +42,7 @@
         <p>In a client SDK, <strong>endpoints are data, not distinct programs.</strong></p>
         <p>Every endpoint follows the exact same mechanical pattern:</p>
         <ul>
-            <li>It has a hierarchical path (<code>app.users.profile.fetch</code>).</li>
+            <li>It has a hierarchical path (e.g. <code>app.founder.profile.fetch</code>).</li>
             <li>It accepts runtime input parameters.</li>
             <li>It maps to an underlying resource or query template.</li>
             <li>It dispatches a request and returns a response.</li>
@@ -59,20 +59,31 @@
         <h2>Comparison: Adding a New Endpoint</h2>
         <h3>Conventional Folder Approach:</h3>
         <ol>
-            <li>Create directory <code>src/reports/audit/</code></li>
-            <li>Create file <code>src/reports/audit/fetch.js</code></li>
+            <li>Create directory <code>src/ecosystem/stats/</code></li>
+            <li>Create file <code>src/ecosystem/stats/fetch.js</code></li>
             <li>Write 30 lines of boilerplate (imports, argument checks, dispatch)</li>
-            <li>Export the function and update multiple index re-exports</li>
-            <li>Manually update TypeScript declarations</li>
+            <li>Export the function</li>
+            <li>Re-export in <code>src/ecosystem/index.js</code></li>
+            <li>Re-export in <code>src/index.js</code></li>
+            <li>Manually write or update TypeScript declarations in <code>index.d.ts</code></li>
         </ol>
 
         <h3>JSON-Driven Architecture:</h3>
         <ol>
-            <li>Add definition to <code>source.json</code></li>
-            <li>Add route to <code>api.json</code></li>
-            <li>Run <code>npm run generate:dts</code></li>
+            <li>Add the definition to <code>source.json</code>:
+                <pre><code>"ecosystem": {
+    "stats": {
+        "fetch": { "action": "fetch", "resource": "stats", "description": "Fetches download metrics." }
+    }
+}</code></pre>
+            </li>
+            <li>Add the path to <code>api.json</code>:
+                <pre><code>"app.ecosystem.stats.fetch"</code></pre>
+            </li>
+            <li>Run <code>npx create-intellisense</code>.</li>
         </ol>
-        <p><strong>Result:</strong> Zero new JavaScript files, zero boilerplate, and zero risk of broken import paths.</p>
+
+        <p>Done. Zero new JavaScript files. Zero boilerplate. Zero risk of broken import paths.</p>
 
         <footer>
             <p>&copy; 2026 KeshavSoft. Distributed under the MIT License.</p>

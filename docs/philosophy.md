@@ -37,7 +37,7 @@ src/
 In a client SDK, **endpoints are data, not distinct programs.**
 
 Every endpoint follows the exact same mechanical pattern:
-1. It has a hierarchical path (`app.users.profile.fetch`).
+1. It has a hierarchical path (e.g. `app.founder.profile.fetch`).
 2. It accepts runtime input parameters.
 3. It maps to an underlying resource or query template.
 4. It dispatches a request and returns a response.
@@ -53,25 +53,27 @@ By treating endpoints as structured data:
 ## Comparison: Adding a New Endpoint
 
 ### Conventional Folder Approach:
-1. Create directory `src/reports/audit/`
-2. Create file `src/reports/audit/fetch.js`
+1. Create directory `src/ecosystem/stats/`
+2. Create file `src/ecosystem/stats/fetch.js`
 3. Write 30 lines of boilerplate (imports, argument checks, dispatch)
 4. Export the function
-5. Re-export in `src/reports/index.js`
+5. Re-export in `src/ecosystem/index.js`
 6. Re-export in `src/index.js`
 7. Manually write or update TypeScript declarations in `index.d.ts`
 
 ### JSON-Driven Architecture:
 1. Add the definition to `source.json`:
    ```json
-   "audit": {
-       "fetch": { "action": "fetch", "resource": "audit_logs" }
+   "ecosystem": {
+       "stats": {
+           "fetch": { "action": "fetch", "resource": "stats", "description": "Fetches download metrics." }
+       }
    }
    ```
 2. Add the path to `api.json`:
    ```json
-   "app.reports.audit.fetch"
+   "app.ecosystem.stats.fetch"
    ```
-3. Run `npm run generate:dts`.
+3. Run `npx create-intellisense`.
 
 Done. Zero new JavaScript files. Zero boilerplate. Zero risk of broken import paths.

@@ -1,0 +1,6 @@
+[
+  "app.founder.profile.fetch",
+  "app.founder.links.fetch",
+  "app.company.info.fetch",
+  "app.ecosystem.packages.fetch"
+]

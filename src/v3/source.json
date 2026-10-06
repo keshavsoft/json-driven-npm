@@ -1,0 +1,65 @@
+{
+    "app": {
+        "founder": {
+            "profile": {
+                "fetch": {
+                    "action": "fetch",
+                    "resource": "profile",
+                    "description": "Fetches founder and software architect profile.",
+                    "data": {
+                        "name": "Keshav Nalam",
+                        "role": "Software Architect & Developer",
+                        "company": "KeshavSoft",
+                        "location": "India",
+                        "bio": "Creator of zero-dependency, declarative, JSON-driven NPM architectures."
+                    }
+                }
+            },
+            "links": {
+                "fetch": {
+                    "action": "fetch",
+                    "resource": "links",
+                    "description": "Fetches official website, GitHub, NPM, and LinkedIn profile links.",
+                    "data": {
+                        "website": "https://keshavsoft.com/",
+                        "github": "https://github.com/keshavsoft",
+                        "npm": "https://www.npmjs.com/~keshavsoft",
+                        "linkedin": "https://www.linkedin.com/in/keshav-nalam"
+                    }
+                }
+            }
+        },
+        "company": {
+            "info": {
+                "fetch": {
+                    "action": "fetch",
+                    "resource": "info",
+                    "description": "Fetches KeshavSoft organization information and engineering philosophy.",
+                    "data": {
+                        "name": "KeshavSoft",
+                        "tagline": "Pure, declarative, and config-driven software engineering",
+                        "website": "https://keshavsoft.com/",
+                        "philosophy": "Zero-dependency architectures, declarative pipelines, and zero folder sprawl"
+                    }
+                }
+            }
+        },
+        "ecosystem": {
+            "packages": {
+                "fetch": {
+                    "action": "fetch",
+                    "resource": "packages",
+                    "description": "Lists flagship packages in the KeshavSoft ecosystem.",
+                    "data": [
+                        { "name": "tally-simple", "description": "Raw TDL transport client & CLI for Tally ERP/Prime" },
+                        { "name": "tally-simple-json", "description": "Fast XML-to-JSON parsing client for Tally" },
+                        { "name": "create-intellisense", "description": "Zero-dependency TypeScript declaration generator for JSON-driven architectures" },
+                        { "name": "json-renderers", "description": "Browser DOM mounting runtime for declarative UI specifications" },
+                        { "name": "json-renderers-build", "description": "Headless UI component specification compiler" },
+                        { "name": "json-driven-npm", "description": "Architectural reference implementation and CLI runner for declarative, JSON-driven NPM packages" }
+                    ]
+                }
+            }
+        }
+    }
+}
