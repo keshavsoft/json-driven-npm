@@ -28,7 +28,7 @@
 ┌──────────────────────────────────────────────────────────────────┐
 │                   2. Internal Working Engines                    │
 │                                                                  │
-│   internal-working/route/         internal-working/execution/    │
+│   engine/route/                   engine/execution/              │
 │   (In-Memory Tree Assembly)       (Single-Step Dispatch Pipeline)│
 └─────────────────────────────────┬────────────────────────────────┘
                                   │
@@ -49,7 +49,8 @@
             <li><strong><code>index.js</code></strong>: Imports <code>api.json</code> and <code>source.json</code> with JSON import attributes, connects them to the route assembly engine, and exports the client instance.</li>
         </ul>
 
-        <h3>2. The Internal Engines (<code>internal-working/</code>)</h3>
+        <h3>2. The Internal Engines (<code>engine/</code>)</h3>
+        <p><em>(Previously named <code>internal-working/</code> in v3, cleanly unified to <code>engine/</code> in v4)</em>:</p>
         <ul>
             <li><strong><code>route/</code></strong>: Traverses <code>api.json</code> and dynamically constructs nested objects with callable functions at the leaf nodes in memory at startup.</li>
             <li><strong><code>execution/</code></strong>: The runtime executor. When an endpoint is called, it receives <code>{ inRoutePath, inParam, inSource }</code> and executes the query through a narrative, single-responsibility pipeline.</li>

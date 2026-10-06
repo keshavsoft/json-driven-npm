@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import packageInfo from "../package.json" with { type: "json" };
 import app from "../src/index.js";
-import apiPaths from "../src/v3/api.json" with { type: "json" };
+import apiPaths from "../src/v4/api.json" with { type: "json" };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -85,9 +85,9 @@ const runAllRoutes = async () => {
     console.log(`  Architectural Source of Truth & Reference Implementation`);
     console.log(`=============================================================\n`);
 
-    console.log(`📦 Active Version   : src/v3`);
-    console.log(`🧭 Public Contract  : src/v3/api.json (${apiPaths.length} routes)`);
-    console.log(`📄 Domain Spec      : src/v3/source.json`);
+    console.log(`📦 Active Version   : src/v4`);
+    console.log(`🧭 Public Contract  : src/v4/api.json (${apiPaths.length} routes)`);
+    console.log(`📄 Domain Spec      : src/v4/source.json`);
     console.log(`⚡ Execution Mode   : In-Memory Dot-Notation Tree\n`);
 
     console.log(`--- Live Endpoint Executions ---\n`);

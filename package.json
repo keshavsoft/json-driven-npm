@@ -1,6 +1,6 @@
 {
     "name": "json-driven-npm",
-    "version": "1.3.1",
+    "version": "1.4.1",
     "description": "Architectural blueprint and reference implementation for building clean, type-safe, JSON-driven NPM clients without folder sprawl.",
     "type": "module",
     "exports": {

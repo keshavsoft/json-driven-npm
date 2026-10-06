@@ -18,9 +18,9 @@ This document details the architectural boundaries that govern a JSON-driven NPM
                                   │
                                   ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│                   2. Internal Working Engines                    │
+│                   2. In-Memory Machinery (engine/)               │
 │                                                                  │
-│   internal-working/route/         internal-working/execution/    │
+│   engine/route/                   engine/execution/              │
 │   (In-Memory Tree Assembly)       (Single-Step Dispatch Pipeline)│
 └─────────────────────────────────┬────────────────────────────────┘
                                   │
@@ -46,8 +46,8 @@ The public interface enforces strict information hiding and serves as the entry 
 import source from "./source.json" with { type: "json" };
 import apiPaths from "./api.json" with { type: "json" };
 
-import createRoute from "./internal-working/route/index.js";
-import execute from "./internal-working/execution/index.js";
+import createRoute from "./engine/route/index.js";
+import execute from "./engine/execution/index.js";
 
 const app = createRoute({
     inApiPaths: apiPaths,
@@ -58,7 +58,8 @@ const app = createRoute({
 export default app;
 ```
 
-### 2. The Internal Engines (`internal-working/`)
+### 2. The Internal Engines (`engine/`)
+*(Note: Named `internal-working/` in historical `v3`, cleanly unified to `engine/` in `v4`)*:
 - **`route/`**: Traverses `api.json` and dynamically constructs nested objects with callable functions at the leaf nodes in memory during module evaluation.
 - **`execution/`**: The runtime executor. When an endpoint is called, it receives `{ inRoutePath, inParam, inSource }` and runs the query through a narrative, single-responsibility pipeline.
 
