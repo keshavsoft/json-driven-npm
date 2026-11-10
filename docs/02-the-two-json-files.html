@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The two JSON files · JSON-Driven NPM</title><link rel="stylesheet" href="story.css"></head><body><main class="wrap"><header><div class="eyebrow">JSON-DRIVEN NPM · FIELD GUIDE 02/07</div><h1>The two JSON files</h1><p class="lead">One file controls access; the other describes the endpoint.</p></header><p>The two JSON files answer different questions. Keeping those questions separate makes the public API easy to review and the endpoint definitions easy to maintain.</p><div class="cols"><div class="panel"><span class="tag">api.json</span><h2>What is exposed?</h2><pre>[
+  "app.founder.profile.fetch",
+  "app.company.info.fetch"
+]</pre><p>This is the allowlist. Only listed paths are mounted into the public client tree.</p></div><div class="panel"><span class="tag">source.json</span><h2>What does it describe?</h2><pre>{
+  "app": {
+    "founder": {
+      "profile": {
+        "fetch": {
+          "action": "fetch",
+          "resource": "profile",
+          "data": {}
+        }
+      }
+    }
+  }
+}</pre><p>This holds endpoint metadata and, in this reference package, sample response data.</p></div></div><div class="panel"><strong>Remember</strong><p>A path in source.json is not automatically public. It must also appear in api.json.</p></div><nav class="nav"><a href="01-the-idea.html">← Previous</a><a href="03-build-the-tree.html">Next →</a></nav><footer>JSON-Driven NPM · KeshavSoft · Short, focused documentation</footer></main></body></html>

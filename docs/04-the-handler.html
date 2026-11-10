@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Why pass a handler? · JSON-Driven NPM</title><link rel="stylesheet" href="story.css"></head><body><main class="wrap"><header><div class="eyebrow">JSON-DRIVEN NPM · FIELD GUIDE 04/07</div><h1>Why pass a handler?</h1><p class="lead">The route builder creates functions; the executor decides what they do.</p></header><p>The route engine should not need to know how requests are executed. So the composition root passes an executor function into the route builder. Each generated leaf remembers its own route path and calls that shared executor when invoked.</p><div class="panel"><h2>The composition root supplies the executor</h2><pre>createRoute({
+  inApiPaths: apiPaths,
+  inSource: source,
+  inExecutor: execute
+});</pre></div><div class="panel"><h2>Each leaf delegates to it</h2><pre>return async (inParam, ...inArgs) => {
+  return await localExecutor({
+    inRoutePath: localPath,
+    inParam,
+    inArgs,
+    inSource: localSource
+  });
+};</pre></div><p>The leaf function closes over its route path and the shared executor. That remembered context is a JavaScript closure.</p><div class="panel"><strong>Remember</strong><p>The executor is injected behavior. The route engine stays reusable because it does not hardcode the execution strategy.</p></div><nav class="nav"><a href="03-build-the-tree.html">← Previous</a><a href="05-one-call.html">Next →</a></nav><footer>JSON-Driven NPM · KeshavSoft · Short, focused documentation</footer></main></body></html>

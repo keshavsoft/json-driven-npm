@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Build the object tree · JSON-Driven NPM</title><link rel="stylesheet" href="story.css"></head><body><main class="wrap"><header><div class="eyebrow">JSON-DRIVEN NPM · FIELD GUIDE 03/07</div><h1>Build the object tree</h1><p class="lead">A string path becomes nested JavaScript properties.</p></header><p>The route engine reads each allowed path, splits it at the dots, creates branch objects, and places a function at the final property. It does this in memory. It does not create folders or files on disk.</p><div class="panel"><h2>Input path</h2><pre>app.founder.profile.fetch</pre><h2>In-memory result</h2><pre>{
+  app: {
+    founder: {
+      profile: {
+        fetch: [callable function]
+      }
+    }
+  }
+}</pre></div><div class="flow"><div class="step"><b>1 · route/index.js</b>Loops over every path in api.json.</div><div class="step"><b>2 · attachPath.js</b>Creates the intermediate objects: app, founder, profile.</div><div class="step"><b>3 · createLeafHandler.js</b>Creates the callable function at fetch.</div></div><div class="panel"><strong>Remember</strong><p>The route engine is an object-tree builder, not a file generator.</p></div><nav class="nav"><a href="02-the-two-json-files.html">← Previous</a><a href="04-the-handler.html">Next →</a></nav><footer>JSON-Driven NPM · KeshavSoft · Short, focused documentation</footer></main></body></html>
